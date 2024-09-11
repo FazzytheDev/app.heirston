@@ -1,51 +1,65 @@
-
 const botStart = () => {
     const { User } = require('../models/User');
-    const app = require('express')();
+    const express = require('express');
+    const app = express();
     const TelegramBot = require('node-telegram-bot-api');
-    const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4';
-    const bot = new TelegramBot(botToken, {webHook: true});
+    const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
+    const bot = new TelegramBot(botToken, { webHook: true });
+    
+    // Correct webhook URL for your bot
     const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
-    bot.setWebHook(webhookUrl);
-    app.post(`/bot${botToken}`, (req, res) => {
-        bot.processUpdate(req.body);
-        res.sendStatus(200);
+
+    // Set the webhook for Telegram to call
+    bot.setWebHook(webhookUrl).then(() => {
+        console.log(`Webhook successfully set at: ${webhookUrl}`);
+    }).catch(error => {
+        console.error('Error setting webhook:', error);
     });
 
-    bot.onText(/\/start(?:\s+(.+))?/, async(msg, match) => {
-        const chatId = msg.chat.id.toString(); //stringed for consistency in the database
-        const referralCode = match[1];
+    // Route to process incoming Telegram updates
+    app.post(`/bot${botToken}`, (req, res) => {
+        console.log('Webhook received update'); // Log to confirm webhook is hit
+        bot.processUpdate(req.body);
+        res.sendStatus(200); // Respond with 200 OK to acknowledge the update
+    });
+
+    // Bot command listener for /start
+    bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
+        console.log('Received /start command'); // Log for debugging
+        const chatId = msg.chat.id.toString(); // Consistent format for Telegram ID
+        const referralCode = match[1]; // Referral code (if present)
         const username = msg.chat.username;
-        try{
-            let user = await User.findOne({telegramId: chatId});
-            if(!user){
+        try {
+            let user = await User.findOne({ telegramId: chatId });
+            if (!user) {
                 user = new User({
-                    telegramId: chatId, username: username, balance: 0,  referredBy: referralCode || null
-                })
-                if(referralCode){
-                    const referrer = await User.findOne({telegramId: referralCode});
-                    if(referrer){
+                    telegramId: chatId,
+                    username: username,
+                    balance: 0,
+                    referredBy: referralCode || null
+                });
+
+                // Handle referral logic
+                if (referralCode) {
+                    const referrer = await User.findOne({ telegramId: referralCode });
+                    if (referrer) {
                         referrer.referredUsers.push(chatId);
                         referrer.balance = (referrer.balance || 0) + 1000;
                         await referrer.save();
                     }
                 }
                 await user.save();
-                bot.sendMessage(chatId, `Welcome to the world of Heirs ${username}. Where our ton shall set you free!`);
-
-
-            }
-            else{
+                bot.sendMessage(chatId, `Welcome to the world of Heirs, ${username}. Where our ton shall set you free!`);
+            } else {
                 bot.sendMessage(chatId, `Missed you ${username}, let's get back to business!`);
             }
-
-        }
-        catch(error){
-            console.error('Error handling command:', error);
+        } catch (error) {
+            console.error('Error handling /start command:', error);
             bot.sendMessage(chatId, `Sorry, something went wrong. Please try again later.`);
         }
     });
 }
+
 module.exports = {
     botStart
 }
