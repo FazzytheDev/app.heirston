@@ -1,13 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { botStart } = require('./src/controllers/bot'); 
 const mongoose = require('mongoose');
+const { handleUpdate, setupBotCommands } = require('./src/controllers/bot');
+
 const app = express();
+app.use(bodyParser.json());
+
+// Connect to MongoDB
 mongoose.connect('mongodb+srv://fawazogunleye:Aabimbola2022@cluster0.caz9xfe.mongodb.net/heirstonvolt?retryWrites=true&w=majority&appName=Cluster0');
 
-app.use(bodyParser.json());
-botStart();
+// Route for handling webhook updates
+app.post(`/bot7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4`, handleUpdate);
 
-app.listen('3000', () => {
-    return(`server started!`);
+// Set up bot commands
+setupBotCommands();
+
+// Start server
+app.listen(3000, () => {
+    console.log('Server started on port 3000');
 });

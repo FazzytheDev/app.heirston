@@ -1,27 +1,25 @@
-const { User } = require('../models/User');
-const express = require('express');
-const bodyParser = require('body-parser');
 const TelegramBot = require('node-telegram-bot-api');
-const app = express();
-app.use(bodyParser.json());
+const { User } = require('../models/User'); // Adjust the path if needed
 
-const botStart = () => {
-    const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
-    const bot = new TelegramBot(botToken, { webHook: true });
-    const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
+const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
+const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
+const bot = new TelegramBot(botToken, { webHook: true });
 
-    // Set the webhook for Telegram to call
-    bot.setWebHook(webhookUrl).then(() => {
-        console.log(`Webhook successfully set at: ${webhookUrl}`);
-    }).catch(error => {
-        console.error('Error setting webhook:', error);
-    });
+// Set the webhook for Telegram to call
+bot.setWebHook(webhookUrl).then(() => {
+    console.log(`Webhook successfully set at: ${webhookUrl}`);
+}).catch(error => {
+    console.error('Error setting webhook:', error);
+});
 
-    app.post(`/bot${botToken}`, async(req, res) => {
-        bot.processUpdate(req.body);
-        res.sendStatus(200); 
-    });
+// Handle webhook updates
+const handleUpdate = (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200); 
+};
 
+// Define bot commands and logic
+const setupBotCommands = () => {
     bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
         const chatId = msg.chat.id.toString(); // Consistent format for Telegram ID
         const referralCode = match[1]; 
@@ -55,8 +53,9 @@ const botStart = () => {
             bot.sendMessage(chatId, `Sorry, something went wrong. Please try again later.`);
         }
     });
-}
+};
 
 module.exports = {
-    botStart
-}
+    handleUpdate,
+    setupBotCommands
+};
