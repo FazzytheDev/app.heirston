@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { handleUpdate, setupBotCommands } = require('./src/controllers/bot');
-
+const { setupBotCommands } = require('./src/controllers/bot');
+const botRouter = require('./src/routers/botRouter');
 const app = express();
 app.use(bodyParser.json());
 
@@ -10,8 +10,7 @@ app.use(bodyParser.json());
 mongoose.connect('mongodb+srv://fawazogunleye:Aabimbola2022@cluster0.caz9xfe.mongodb.net/heirstonvolt?retryWrites=true&w=majority&appName=Cluster0');
 
 // Route for handling webhook updates
-app.post(`/bot7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4`, handleUpdate);
-
+app.use('/', botRouter);
 // Set up bot commands
 setupBotCommands();
 
