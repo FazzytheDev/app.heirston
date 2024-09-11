@@ -1,5 +1,6 @@
-const botStart = async(req, res) => {
+const botStart = () => {
     const { User } = require('../models/User');
+    const TelegramBot = require('node-telegram-bot-api');
     const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4';
     const bot = new TelegramBot(botToken, {webHook: true});
     const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
