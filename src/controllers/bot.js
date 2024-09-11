@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 const botStart = () => {
     const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
-    const bot = new TelegramBot(botToken, { polling: true });
+    const bot = new TelegramBot(botToken, { webHook: true });
     const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
 
     // Set the webhook for Telegram to call
