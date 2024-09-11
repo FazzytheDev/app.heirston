@@ -1,6 +1,5 @@
 const { User } = require('../models/User');
-const express = require('express');
-const app = express();
+const router = require('express').Router();
 const TelegramBot = require('node-telegram-bot-api');
     
 const botStart = () => {
@@ -15,7 +14,7 @@ const botStart = () => {
         console.error('Error setting webhook:', error);
     });
 
-    app.post(`/bot${botToken}`, (req, res) => {
+    router.post(`/bot${botToken}`, async(req, res) => {
         bot.processUpdate(req.body);
         res.sendStatus(200); 
     });
