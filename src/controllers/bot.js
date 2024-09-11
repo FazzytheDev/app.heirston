@@ -1,5 +1,7 @@
+
 const botStart = () => {
     const { User } = require('../models/User');
+    const app = require('express')();
     const TelegramBot = require('node-telegram-bot-api');
     const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4';
     const bot = new TelegramBot(botToken, {webHook: true});
