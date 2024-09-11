@@ -1,33 +1,17 @@
 const botStart = () => {
     const { User } = require('../models/User');
-    const express = require('express');
-    const app = express();
     const TelegramBot = require('node-telegram-bot-api');
-    const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
+    const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4';
     const bot = new TelegramBot(botToken, { webHook: true });
-    
-    // Correct webhook URL for your bot
     const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
-
-    // Set the webhook for Telegram to call
     bot.setWebHook(webhookUrl).then(() => {
         console.log(`Webhook successfully set at: ${webhookUrl}`);
     }).catch(error => {
         console.error('Error setting webhook:', error);
     });
-
-    // Route to process incoming Telegram updates
-    app.post(`/bot${botToken}`, (req, res) => {
-        console.log('Webhook received update'); // Log to confirm webhook is hit
-        bot.processUpdate(req.body);
-        res.sendStatus(200); // Respond with 200 OK to acknowledge the update
-    });
-
-    // Bot command listener for /start
     bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
-        console.log('Received /start command'); // Log for debugging
         const chatId = msg.chat.id.toString(); // Consistent format for Telegram ID
-        const referralCode = match[1]; // Referral code (if present)
+        const referralCode = match[1]; 
         const username = msg.chat.username;
         try {
             let user = await User.findOne({ telegramId: chatId });
@@ -39,7 +23,7 @@ const botStart = () => {
                     referredBy: referralCode || null
                 });
 
-                // Handle referral logic
+                // for referral logic
                 if (referralCode) {
                     const referrer = await User.findOne({ telegramId: referralCode });
                     if (referrer) {
