@@ -17,7 +17,7 @@ const botStart = () => {
         console.error('Error setting webhook:', error);
     });
 
-    router.post(`/bot${botToken}`, async(req, res) => {
+    app.post(`/bot${botToken}`, async(req, res) => {
         bot.processUpdate(req.body);
         res.sendStatus(200); 
     });
