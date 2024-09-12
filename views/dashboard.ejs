@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        .user-info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, <%= user.username %>!</h1>
+        
+        <div class="user-info">
+            <p><strong>Telegram ID:</strong> <%= user.telegramId %></p>
+            <p><strong>Balance:</strong> <%= user.balance %> points</p>
+            <p><strong>Next Claim Time:</strong> <%= new Date(user.nextClaimTime).toLocaleString() %></p>
+        </div>
+        
+        <h3>Completed Tasks:</h3>
+        <ul>
+            <% if (user.completedTasks.length > 0) { %>
+                <% user.completedTasks.forEach(task => { %>
+                    <li><%= task %></li>
+                <% }) %>
+            <% } else { %>
+                <p>No tasks completed yet.</p>
+            <% } %>
+        </ul>
+
+        <h3>Referred Users:</h3>
+        <ul>
+            <% if (user.referredUsers.length > 0) { %>
+                <% user.referredUsers.forEach(refUser => { %>
+                    <li><%= refUser %></li>
+                <% }) %>
+            <% } else { %>
+                <p>No users referred yet.</p>
+            <% } %>
+        </ul>
+    </div>
+</body>
+</html>
