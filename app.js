@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const ejs = require('ejs');
 const { setupBotCommands } = require('./src/controllers/bot');
