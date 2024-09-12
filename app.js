@@ -13,6 +13,9 @@ mongoose.connect('mongodb+srv://fawazogunleye:Aabimbola2022@cluster0.caz9xfe.mon
 
 // Route for handling webhook updates
 app.use('/', botRouter);
+app.get('/', async(req, res) => {
+    res.render('index');
+});
 // Set up bot commands
 setupBotCommands();
 function computeHmacSha256(data, key) {
