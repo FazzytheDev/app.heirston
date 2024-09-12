@@ -1,24 +1,24 @@
 const TelegramBot = require('node-telegram-bot-api');
-const { User } = require('../models/User'); // Adjust the path if needed
+const { User } = require('../models/User'); 
 
-const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4'; // Your bot token
+const botToken = '7054215985:AAEGnmBteJxbpQ3mbgqEoUKVx3DDD7QBHA4';
 const webhookUrl = `https://app-heirston-kw9o.onrender.com/bot${botToken}`;
 const bot = new TelegramBot(botToken, { webHook: true });
 
-// Set the webhook for Telegram to call
+
 bot.setWebHook(webhookUrl).then(() => {
     console.log(`Webhook successfully set at: ${webhookUrl}`);
 }).catch(error => {
     console.error('Error setting webhook:', error);
 });
 
-// Handle webhook updates
+// handles the webhook updates
 const handleUpdate = (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200); 
 };
 
-// Define bot commands and logic
+//the on start logic command
 const setupBotCommands = () => {
     bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
         const chatId = msg.chat.id.toString(); // Consistent format for Telegram ID
