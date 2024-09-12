@@ -27,6 +27,10 @@ function validateTelegramData(initData, botToken) {
     const urlParams = new URLSearchParams(initData);
     const hash = urlParams.get('hash'); // Extract hash from initData
 
+    // Log the received data for debugging
+    console.log('Received initData:', initData);
+    console.log('Extracted hash:', hash);
+
     // Remove 'hash' and create data-check-string (sorted and newline-separated)
     urlParams.delete('hash');
     const dataCheckString = Array.from(urlParams.entries())
@@ -34,14 +38,24 @@ function validateTelegramData(initData, botToken) {
         .sort()
         .join('\n');
 
+    // Log the constructed data-check-string
+    console.log('Constructed data-check-string:', dataCheckString);
+
     // Compute the secret key
     const secretKey = computeHmacSha256(botToken, 'WebAppData');
+    
+    // Log the computed secret key for debugging
+    console.log('Computed secret key:', secretKey);
 
     // Compute the HMAC-SHA-256 hash of data-check-string
     const computedHash = computeHmacSha256(dataCheckString, secretKey);
 
+    // Log the computed hash for comparison
+    console.log('Computed hash:', computedHash);
+
     // Validate the computed hash against the received hash
     if (computedHash !== hash) {
+        console.log('Hash validation failed');
         return false;
     }
 
@@ -49,7 +63,11 @@ function validateTelegramData(initData, botToken) {
     const authDate = parseInt(urlParams.get('auth_date'), 10);
     const currentTime = Math.floor(Date.now() / 1000);
 
+    console.log('Current time:', currentTime);
+    console.log('Auth date:', authDate);
+
     if (currentTime - authDate > 300) { // 5 minutes = 300 seconds
+        console.log('Auth date is too old');
         return false;
     }
 
